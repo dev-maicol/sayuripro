@@ -34,4 +34,26 @@ class UserController extends Controller
 
     return view('usuarios.index', compact('usuarios'));
   }
+
+  public function create()
+  {
+    return view('usuarios.create');
+  }
+
+  public function store(Request $request)
+  {
+    $request->validate([
+      'name' => 'required|string|max:255',
+      'email' => 'required|email|unique:users,email',
+      'password' => 'required|min:6|confirmed',
+    ]);
+
+    User::create([
+      'name' => $request->name,
+      'email' => $request->email,
+      'password' => bcrypt($request->password),
+    ]);
+
+    return redirect()->route('usuarios.index')->with('success', 'Usuario creado correctamente.');
+  }
 }

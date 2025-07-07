@@ -53,7 +53,11 @@
                     {{-- Botón de notificaciones --}}
                     {{-- Información del usuario --}}
 
+                    @if (Auth::check())
                     <span class="text-sm text-gray-600 dark:text-gray-300">{{ Auth::user()->name }}</span>
+
+                    @endif
+
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
                         <button type="submit" class="text-sm text-red-600 hover:underline dark:text-red-400">Cerrar
