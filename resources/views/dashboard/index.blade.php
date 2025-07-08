@@ -11,7 +11,7 @@
             <h2 class="text-2xl font-bold text-gray-800 dark:text-white">
                 Bienvenido, {{ Auth::user()->name }}
             </h2>
-            <p class="mt-2 text-gray-600 dark:text-gray-300">Este es tu panel con Flowbite y Laravel 12.</p>
+            <p class="mt-2 text-gray-600 dark:text-gray-300">Este es tu panel administrativo.</p>
         @else
             <h2 class="text-2xl font-bold text-gray-800 dark:text-white">
                 Bienvenido

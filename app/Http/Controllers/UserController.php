@@ -56,4 +56,36 @@ class UserController extends Controller
 
     return redirect()->route('usuarios.index')->with('success', 'Usuario creado correctamente.');
   }
+
+  public function edit(User $usuario)
+  {
+    return view('usuarios.edit', compact('usuario'));
+  }
+
+  public function update(Request $request, User $usuario)
+  {
+    $request->validate([
+      'name' => 'required|string|max:255',
+      'email' => 'required|email|unique:users,email,' . $usuario->id,
+      'password' => 'nullable|min:8|confirmed',
+    ]);
+
+    $usuario->name = $request->name;
+    $usuario->email = $request->email;
+
+    if ($request->filled('password')) {
+      $usuario->password = bcrypt($request->password);
+    }
+
+    $usuario->save();
+
+    return redirect()->route('usuarios.index')->with('success', 'Usuario actualizado correctamente.');
+  }
+
+  public function destroy(User $usuario)
+  {
+    $usuario->delete();
+
+    return redirect()->route('usuarios.index')->with('success', 'Usuario eliminado correctamente.');
+  }
 }

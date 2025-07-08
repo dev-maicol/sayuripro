@@ -1,6 +1,7 @@
 @extends('layouts.dashboard')
 
 @section('content')
+    {{-- Alertas --}}
     @if (session('success'))
         <div id="alert-3"
             class="fixed top-5 right-5 z-50 flex items-center p-4 mb-4 text-green-800 border-t-4 border-green-300 bg-green-50 dark:text-green-400 dark:bg-gray-800 dark:border-green-800"
@@ -25,96 +26,66 @@
 
     <div class="p-6">
         <div class="flex justify-start mb-4">
-            <a href="{{ route('usuarios.create') }}"
-                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700">
-                + Crear usuario
+            <a href="{{ route('categorias.create') }}"
+                class="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                + Crear categoría
             </a>
         </div>
 
+        {{-- Tabla --}}
         <div class="relative overflow-x-auto sm:rounded-lg">
             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead class="text-xs uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                    {{-- Encabezado --}}
                     <tr>
                         <th class="px-6 py-3">Nombre</th>
-                        <th class="px-6 py-3">Correo</th>
-                        <th class="px-6 py-3">Fecha de registro</th>
                         <th class="px-6 py-3">Acciones</th>
                     </tr>
 
-                    {{-- Filtros --}}
                     <tr>
-                        <form method="GET" action="{{ route('usuarios.index') }}" class="contents">
-                            {{-- Nombre --}}
+                        <form method="GET" action="{{ route('categorias.index') }}" class="contents">
                             <th class="px-6 py-2">
                                 <div x-data="{ value: '{{ request('nombre') }}' }" class="relative">
-                                    <input type="text" name="nombre" x-model="value" @keyup.enter="$el.form.submit()"
-                                        placeholder="Nombre..."
-                                        class="w-full p-1 pl-3 pr-7 text-xs border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600">
+                                    <input type="text" name="nombre" x-model="value"
+                                        @keyup.enter="$refs.nombreInput.form.submit()" placeholder="Buscar..."
+                                        class="w-full p-1 pl-3 pr-7 text-xs border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600"
+                                        x-ref="nombreInput">
                                     <button type="button" x-show="value"
-                                        @click="value = ''; $nextTick(() => $el.form.submit())"
+                                        @click="value = ''; $nextTick(() => $refs.nombreInput.form.submit())"
                                         class="absolute inset-y-0 right-1 flex items-center text-gray-400 hover:text-red-500">✕</button>
                                 </div>
                             </th>
-
-                            {{-- Correo --}}
-                            <th class="px-6 py-2">
-                                <div x-data="{ value: '{{ request('correo') }}' }" class="relative">
-                                    <input type="text" name="correo" x-model="value" @keyup.enter="$el.form.submit()"
-                                        placeholder="Correo..."
-                                        class="w-full p-1 pl-3 pr-7 text-xs border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600">
-                                    <button type="button" x-show="value"
-                                        @click="value = ''; $nextTick(() => $el.form.submit())"
-                                        class="absolute inset-y-0 right-1 flex items-center text-gray-400 hover:text-red-500">✕</button>
-                                </div>
-                            </th>
-
-                            {{-- Fecha --}}
-                            <th class="px-6 py-2">
-                                <div x-data="{ value: '{{ request('fecha') }}' }" class="relative">
-                                    <input type="date" name="fecha" x-model="value" @keyup.enter="$el.form.submit()"
-                                        class="w-full p-1 pr-7 text-xs border rounded-md dark:bg-gray-800 dark:text-white dark:border-gray-600">
-                                    <button type="button" x-show="value"
-                                        @click="value = ''; $nextTick(() => $el.form.submit())"
-                                        class="absolute inset-y-0 right-1 flex items-center text-gray-400 hover:text-red-500">✕</button>
-                                </div>
-                            </th>
-
-                            {{-- Botón oculto --}}
                             <th>
-                                <button type="submit" class="hidden">Filtrar</button>
+                                <button type="submit" class="hidden">Buscar</button>
                             </th>
                         </form>
                     </tr>
                 </thead>
 
-
                 <tbody>
-                    @forelse ($usuarios as $usuario)
+                    @forelse ($categorias as $categoria)
                         <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-                            <td class="px-6 py-4 font-medium text-gray-900 dark:text-white">
-                                {{ $usuario->name }}
+                            <td class="px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                                {{ $categoria->nombre }}
                             </td>
-                            <td class="px-6 py-4">{{ $usuario->email }}</td>
-                            <td class="px-6 py-4">{{ $usuario->created_at->format('d/m/Y') }}</td>
-                            <td class="px-6 py-4 flex gap-2">
+                            <td class="px-6 py-4 flex items-center gap-2">
                                 {{-- Editar --}}
-                                <a href="{{ route('usuarios.edit', $usuario) }}"
+                                <a href="{{ route('categorias.edit', $categoria) }}"
                                     class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
                                     title="Editar">
                                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
                                         viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round"
-                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 20.5H4v-3.5L16.732 3.732z" />
+                                            d="M15.232 5.232l3.536 3.536M9 11l6.732-6.732a2.5 2.5 0 013.536 3.536L12 16l-4 1 1-4z" />
                                     </svg>
                                 </a>
 
                                 {{-- Eliminar --}}
-                                <form action="{{ route('usuarios.destroy', $usuario) }}" method="POST"
-                                    onsubmit="return confirm('¿Estás seguro de eliminar este usuario?')">
+                                <form action="{{ route('categorias.destroy', $categoria) }}" method="POST"
+                                    onsubmit="return confirm('¿Estás seguro de eliminar esta categoría?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" title="Eliminar" class="text-red-600 hover:text-red-800">
+                                    <button type="submit" title="Eliminar"
+                                        class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300">
                                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"
                                             viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round"
@@ -126,7 +97,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center py-4 text-gray-500 dark:text-gray-400">
+                            <td colspan="2" class="text-center py-4 text-gray-500 dark:text-gray-400">
                                 No se encontraron resultados.
                             </td>
                         </tr>
@@ -137,7 +108,7 @@
 
         {{-- Paginación --}}
         <div class="mt-4">
-            {{ $usuarios->appends(request()->query())->links() }}
+            {{ $categorias->appends(request()->query())->links() }}
         </div>
     </div>
 
